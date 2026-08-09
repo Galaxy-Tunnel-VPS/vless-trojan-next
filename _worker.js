@@ -9,8 +9,8 @@ import { connect } from "cloudflare:sockets";
 // ============================================
 // CONFIGURATION & DEFAULTS
 // ============================================
-var ALLOWED_UUIDS = ["d3b07384-d113-42a6-a719-30cf56f235d1","8f3d12a9-7c45-421b-8e12-990142fa91b0","1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d"];
-var ALLOWED_TROJAN_PASSWORDS = ["galaxy_pass_secure_2026","admin_pass_secondary_99"];
+var ALLOWED_UUIDS = [""];
+var ALLOWED_TROJAN_PASSWORDS = [""];
 var PROXY_IP_POOL = ["104.16.85.20:443","104.17.123.45:443","104.21.234.45:443","172.64.155.1:443","172.65.250.1:443","[2606:4700:4700::1111]:443","[2606:4700:4700::1001]:443","cdn.xn--b6gac.eu.org:443","cdn-all.xn--b6gac.eu.org:443","cdn-b100.xn--b6gac.eu.org:443","workers.cloudflare.com:443"];
 var SOCKS5_SERVERS = [{"enabled":true,"server":"127.0.0.1","port":1080,"username":"proxyuser","password":"proxypassword"}];
 var DOH_PROVIDERS = ["https://2mms0p4zud.cloudflare-gateway.com/dns-query","https://dns.google/dns-query","https://dns.quad9.net/dns-query","https://cloudflare-dns.com/dns-query","https://1.1.1.1/dns-query","https://dns.alidns.com/dns-query","https://doh.pub/dns-query"];

@@ -1,0 +1,7 @@
+name = "galaxy-tunnel-worker"
+main = "_worker.js"
+compatibility_date = "2024-04-01"
+
+[vars]
+# Optional override for ProxyIP dynamically fetched from GitHub
+# PROXY_LIST_URL = "https://raw.githubusercontent.com/proxzero/galaxy-subdomain/refs/heads/main/PROXYIP.txt"

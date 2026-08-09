@@ -13,7 +13,7 @@ var ALLOWED_UUIDS = [""];
 var ALLOWED_TROJAN_PASSWORDS = [""];
 var PROXY_IP_POOL = ["104.16.85.20:443","104.17.123.45:443","104.21.234.45:443","172.64.155.1:443","172.65.250.1:443","[2606:4700:4700::1111]:443","[2606:4700:4700::1001]:443","cdn.xn--b6gac.eu.org:443","cdn-all.xn--b6gac.eu.org:443","cdn-b100.xn--b6gac.eu.org:443","workers.cloudflare.com:443"];
 var SOCKS5_SERVERS = [{"enabled":true,"server":"127.0.0.1","port":1080,"username":"proxyuser","password":"proxypassword"}];
-var DOH_PROVIDERS = ["https://2mms0p4zud.cloudflare-gateway.com/dns-query","https://dns.google/dns-query","https://dns.quad9.net/dns-query","https://cloudflare-dns.com/dns-query","https://1.1.1.1/dns-query","https://dns.alidns.com/dns-query","https://doh.pub/dns-query"];
+var DOH_PROVIDERS = ["https://dns.google/dns-query","https://dns.quad9.net/dns-query","https://cloudflare-dns.com/dns-query","https://1.1.1.1/dns-query","https://dns.alidns.com/dns-query","https://doh.pub/dns-query"];
 var SNI_DOMAINS = ["www.visa.com","www.visakorea.com","africa.visa.com","www.visa.com.sg","www.visa.com.hk","icook.hk","ip.sb","japan.com","malaysia.com","www.gov.se"];
 
 var GITHUB_PROXY_URL = "https://raw.githubusercontent.com/proxzero/galaxy-subdomain/refs/heads/main/PROXYIP.txt";
@@ -22,14 +22,7 @@ var ENABLE_SOCKS5 = true;
 var ENABLE_SMART_ROUTING = true;
 
 // Dynamic Routing Rules Table
-var ROUTING_RULES = [
-  { type: "domain", pattern: "speedtest.net", action: "direct" },
-  { type: "keyword", pattern: "ookla", action: "direct" },
-  { type: "keyword", pattern: "generate_204", action: "direct" },
-  { type: "keyword", pattern: "gstatic", action: "direct" },
-  { type: "keyword", pattern: "cp.cloudflare.com", action: "direct" },
-  { type: "keyword", pattern: "torrent", action: "block" }
-];
+var ROUTING_RULES = [{"type":"domain","pattern":"speedtest.net","action":"proxy"},{"type":"keyword","pattern":"ookla","action":"proxy"},{"type":"keyword","pattern":"generate_204","action":"direct"},{"type":"keyword","pattern":"gstatic","action":"direct"},{"type":"keyword","pattern":"cp.cloudflare.com","action":"direct"},{"type":"keyword","pattern":"torrent","action":"block"}];
 
 // ============================================
 // UTILITY FUNCTIONS
@@ -189,20 +182,19 @@ function determineRoutingAction(addressRemote, portRemote) {
 
   const host = addressRemote.toLowerCase();
 
-  // Special Android Connectivity Test & Speedtest.net handling
+  // Evaluate explicit user routing rules first (e.g. speedtest.net proxy/direct)
+  for (const rule of ROUTING_RULES) {
+    if (rule.type === "domain" && host === rule.pattern.toLowerCase()) return rule.action;
+    if (rule.type === "keyword" && host.includes(rule.pattern.toLowerCase())) return rule.action;
+  }
+
+  // System Android Connectivity Checks (204 Ping)
   if (
-    host.includes("speedtest") ||
-    host.includes("ookla") ||
     host.includes("generate_204") ||
     host.includes("gstatic.com") ||
     host.includes("cp.cloudflare.com")
   ) {
     return "direct";
-  }
-
-  for (const rule of ROUTING_RULES) {
-    if (rule.type === "domain" && host === rule.pattern.toLowerCase()) return rule.action;
-    if (rule.type === "keyword" && host.includes(rule.pattern.toLowerCase())) return rule.action;
   }
 
   if (host.endsWith(".local") || host === "localhost" || host === "127.0.0.1") return "direct";
